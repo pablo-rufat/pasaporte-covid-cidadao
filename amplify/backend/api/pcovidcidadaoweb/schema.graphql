@@ -1,0 +1,7 @@
+type Cidadao @model {
+  id: ID!
+  address: String
+  name: String
+  cpf: String
+  dataNascimento: String
+}
