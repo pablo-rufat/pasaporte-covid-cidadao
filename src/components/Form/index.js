@@ -9,7 +9,7 @@ const web3 = new Web3(
     new Web3.providers.HttpProvider("http://localhost:8545")
   );
 
-export default function Header(props) {
+export default function Form(props) {
 
     const [ name, setName ] = useState();
     const [ cpf, setCPF ] = useState();
