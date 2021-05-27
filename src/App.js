@@ -6,14 +6,13 @@ import Footer from "./components/Footer";
 import Form from "./components/Form";
 import Web3 from "web3";
 import { Auth, API, graphqlOperation } from 'aws-amplify';
-import * as abi from "./utils/abi.json";
+import { abi, contractAddress } from "./utils/abi";
 import { getCidadao } from "./graphql/queries";
 import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, List, ListItem, ListItemText, Tooltip } from '@material-ui/core';
 import QRCode from "qrcode.react";
-import FormUpload from './components/FormUpload';
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider("http://localhost:8545")
+  new Web3.providers.HttpProvider("http://localhost:7545")
 );
 
 function App() {
@@ -22,7 +21,6 @@ function App() {
   const [ dose1, setDose1 ] = useState(null);
   const [ dose2, setDose2 ] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
-  const [modalFileAberto, setModalFileAberto] = useState(false);
   const [ userId, setUserId ] = useState(null);
   const [ loading, setLoading ] = useState(true);
 
@@ -48,23 +46,26 @@ function App() {
 
         if ( userData ) {
 
-          const contrato = new web3.eth.Contract(abi, userData.address);
+          const contrato = new web3.eth.Contract(abi, contractAddress);
 
-          await contrato.methods
-            .timestampPrimeiraDose()
-            .call({ from: userData.address })
-            .catch(e => console.log(e))
-            .then(result => {
-              setDose1(Number(result));
-            });
+          // get historicos
 
-          await contrato.methods
-            .timestampSegundaDose()
-            .call({ from: userData.address })
-            .catch(e => console.log(e))
-            .then(result => {
-              setDose2(Number(result));
-            });
+
+          // await contrato.methods
+          //   .timestampPrimeiraDose()
+          //   .call({ from: userData.address })
+          //   .catch(e => console.log(e))
+          //   .then(result => {
+          //     setDose1(Number(result));
+          //   });
+
+          // await contrato.methods
+          //   .timestampSegundaDose()
+          //   .call({ from: userData.address })
+          //   .catch(e => console.log(e))
+          //   .then(result => {
+          //     setDose2(Number(result));
+          //   });
         }
 
         console.log(userData);
@@ -102,20 +103,8 @@ function App() {
           />
         </div>
       </div>
-      <div className={modalFileAberto ? "overlay" : "esconder"}>
-        <div className='stats'>
-          <button onClick={() => setModalFileAberto(false)} className='fecharModal'>
-            &times;
-          </button>
-          <FormUpload
-            address={userData ? userData.address : ""}
-            setModalFileAberto={setModalFileAberto}
-          />
-        </div>
-      </div>
       <Header
         setModalAberto={setModalAberto}
-        setModalFileAberto={setModalFileAberto}
         registered={!!userData}
         logout={logout}
       />

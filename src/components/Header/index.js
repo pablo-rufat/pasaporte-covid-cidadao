@@ -13,8 +13,7 @@ export default function Header(props) {
       </div>
 
       { !props.registered && <Button onClick={() => props.setModalAberto(true)}> REGISTRO </Button> }
-      { props.registered && <Button onClick={() => props.logout()}> LOGOUT </Button> }
-      <Button onClick={() => props.setModalFileAberto(true)}> UPLOAD FILE </Button>
+      <Button onClick={() => props.logout()}> LOGOUT </Button>
     </header>
   );
 }

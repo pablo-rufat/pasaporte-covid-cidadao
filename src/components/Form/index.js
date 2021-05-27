@@ -4,9 +4,10 @@ import { useState } from 'react';
 import Web3 from "web3";
 import { createCidadao } from "../../graphql/mutations";
 import "./style.css";
+import { contractAddress, abi } from "../../utils/abi";
 
 const web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:8545")
+    new Web3.providers.HttpProvider("http://localhost:7545")
   );
 
 export default function Form(props) {
@@ -41,6 +42,16 @@ export default function Form(props) {
                     }
                 )
             );
+
+            const contrato = new web3.eth.Contract(abi, contractAddress);
+
+            await contrato.methods
+              .cadastrarCidadao()
+              .call({ from: newAccount.address })
+              .catch(e => console.log(e))
+              .then(result => {
+                  console.log(result);
+              });
 
             props.setModalAberto(false);
             window.location.reload();
