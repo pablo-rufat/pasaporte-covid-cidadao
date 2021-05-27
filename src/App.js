@@ -12,7 +12,7 @@ import { Button, Card, CardActions, CardContent, CardHeader, CircularProgress, L
 import QRCode from "qrcode.react";
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider("http://localhost:7545")
+  new Web3.providers.HttpProvider("http://localhost:8545")
 );
 
 function App() {

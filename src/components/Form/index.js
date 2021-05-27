@@ -7,7 +7,7 @@ import "./style.css";
 import { contractAddress, abi } from "../../utils/abi";
 
 const web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
+    new Web3.providers.HttpProvider("http://localhost:8545")
   );
 
 export default function Form(props) {
