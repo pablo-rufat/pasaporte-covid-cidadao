@@ -5,7 +5,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Form from "./components/Form";
 import Web3 from "web3";
-import { name, br } from "faker-br";
+import { format } from "date-fns";
+import { name, br, date } from "faker-br";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { getCidadao } from "./graphql/queries";
 import {
@@ -23,6 +24,7 @@ import {
 import abi from "./utils/abi.json";
 import contractAddress from "./utils/contractAddress.json";
 import QRCode from "qrcode.react";
+import { createCidadao } from "./graphql/mutations";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const contrato = new web3.eth.Contract(abi, contractAddress);
@@ -71,28 +73,90 @@ function App() {
 
   useEffect(() => {
     const saveDB = async () => {
-      if(addUser){
+      if (addUser) {
         const currentUser = await Auth.currentAuthenticatedUser({
           bypassCache: true,
         });
+        const nome = name.findName();
+        const cpf = String(br.cpf());
+        const contas = await web3.eth.getAccounts();
+        const newAccount = await web3.eth.personal.newAccount(nome);
+        web3.eth.defaultAccount = newAccount;
+        console.log("newAccount", newAccount);
+        await web3.eth.getBalance(contas[0], (err, bal) => {
+          if (err) throw err;
+          console.log("Ganache balance", bal);
+        });
+        await web3.eth.sendTransaction({
+          to: newAccount,
+          from: contas[0],
+          value: web3.utils.toWei("1", "ether"),
+        });
+        await web3.eth.getBalance(newAccount, (err, bal) => {
+          if (err) throw err;
+          console.log("New Account balance", bal);
+        });
 
+        const data = date.past();
+        if (data.getYear() >= 1965) {
+          data.setYear(1965 + Math.floor(Math.random() * 6));
+        }
+        const dataFormatada = format(data, "dd/MM/yyyy");
+
+        const userInfo = {
+          id: currentUser.attributes.sub,
+          address: newAccount,
+          name: nome,
+          cpf: cpf,
+          dataNascimento: dataFormatada,
+        };
+        console.log(userInfo);
+
+        await API.graphql(
+          graphqlOperation(createCidadao, {
+            input: {
+              ...userInfo,
+            },
+          })
+        ).catch(console.log);
+
+        console.log("SALVO NO BD");
+
+        try {
+          await web3.eth.personal
+            .unlockAccount(newAccount, nome, 10000)
+            .catch(console.log);
+          await contrato.methods
+            .cadastrarCidadao()
+            .send({ from: userInfo.address })
+            .catch(e => console.log(e))
+            .then(() => console.log("Cadastrado"));
+        } catch (error) {
+          console.log(error);
+        }
+
+        setUserData(userInfo);
       }
     };
 
-
-  },[]);
+    saveDB();
+  }, [addUser]);
 
   const logout = async () => {
+    setLoading(true);
     try {
       setUserData(null);
       setDose1(null);
       setDose2(null);
-      setUserId(null);
+      setAddUser(false);
+      setModalAberto(false);
       await Auth.signOut();
       window.location.reload();
     } catch (error) {
       console.log("error signing out: ", error);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
