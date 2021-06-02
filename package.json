@@ -12,6 +12,8 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "date-fns": "^2.22.1",
+    "faker-br": "^0.4.1",
     "ipfs-api": "^26.1.2",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
