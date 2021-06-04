@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Form from "./components/Form";
+import Modal from "./components/Modal";
 import Web3 from "web3";
 import { format } from "date-fns";
 import { name, br, date } from "faker-br";
@@ -32,7 +33,7 @@ const contrato = new web3.eth.Contract(abi, contractAddress);
 function App() {
   const [userData, setUserData] = useState(null);
   const [vacinas, setVacinas] = useState([0, 0]);
-  const [modalAberto, setModalAberto] = useState(false);
+  const [modalAberto, setModalAberto] = useState(true);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [addUser, setAddUser] = useState(false);
@@ -185,6 +186,8 @@ function App() {
         registered={!!userData}
         logout={logout}
       />
+      {modalAberto && <Modal setModalAberto={setModalAberto} />}
+
       {userData && (
         <main>
           <Card className='cardWidth'>
