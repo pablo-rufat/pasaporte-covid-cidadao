@@ -22,9 +22,14 @@ main p {
   padding: 0;
 }
 
-.cardWidth {
+.card {
   padding: 0 20px;
   position: relative;
+}
+
+.qrcode {
+  display: block;
+  margin: auto;
 }
 
 .loading {

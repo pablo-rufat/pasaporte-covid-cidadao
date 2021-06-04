@@ -3,7 +3,6 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Modal from "./components/Modal";
 import Web3 from "web3";
 import { format } from "date-fns";
 import { name, br, date } from "faker-br";
@@ -31,7 +30,6 @@ import { createCidadao } from "./graphql/mutations";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const contrato = new web3.eth.Contract(abi, contractAddress.address);
-console.log("END", contractAddress);
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -39,7 +37,6 @@ function App() {
   const [modalAberto, setModalAberto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [addUser, setAddUser] = useState(false);
-  const [search, setSearch] = useState(false);
   const [input, setInput] = useState("");
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -156,8 +153,7 @@ function App() {
     console.log("interval");
     console.log("AQUI", userData);
 
-    //const intervalId = setInterval(async () => {
-    const getTime = async () => {
+    const intervalId = setInterval(async () => {
       try {
         if (userData) {
           const momento = new Date();
@@ -173,14 +169,12 @@ function App() {
       } catch (error) {
         console.log(error);
       }
-    };
-    getTime();
-    // }, 2000);
-    /*
+    }, 2000);
+
     return () => {
       clearInterval(intervalId);
-    };*/
-  }, [search]);
+    };
+  });
 
   const logout = async () => {
     setLoading(true);
@@ -241,8 +235,6 @@ function App() {
         setModalAberto={setModalAberto}
         registered={!!userData}
         logout={logout}
-        setSearch={setSearch}
-        search={search}
       />
       {modalAberto && (
         <div className='overlay'>
@@ -284,13 +276,14 @@ function App() {
 
       {userData && (
         <main>
-          <Card className='cardWidth'>
+          <Card className='card'>
             {loading && (
               <div className='loading'>
                 <CircularProgress />
               </div>
             )}
             <CardHeader
+              className='cardInfo'
               title={userData ? userData.name : ""}
               subheader={
                 userData
@@ -305,13 +298,16 @@ function App() {
               }
             />
             <CardContent>
-              <QRCode value={userData.address} />
-              <List>
-                <ListItem>
+              <QRCode value={userData.address} className='qrcode' />
+              <List className='cardInfo'>
+                <ListItem className='cardInfo'>
                   <ListItemText
+                    className='cardInfo'
                     primary='Primeira dose'
                     secondary={
-                      userData && vacinas[0] !== 0 ? vacinas[0] : "Ainda nada"
+                      userData && vacinas[0] !== 0
+                        ? format(vacinas[0], "dd/MM/yyyy HH:mm")
+                        : "Ainda nada"
                     }
                   />
                 </ListItem>
@@ -319,7 +315,9 @@ function App() {
                   <ListItemText
                     primary='Primeira dose'
                     secondary={
-                      userData && vacinas[1] !== 0 ? vacinas[1] : "Ainda nada"
+                      userData && vacinas[1] !== 0
+                        ? format(vacinas[1], "dd/MM/yyyy HH:mm")
+                        : "Ainda nada"
                     }
                   />
                 </ListItem>

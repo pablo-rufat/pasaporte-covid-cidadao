@@ -15,13 +15,6 @@ export default function Header(props) {
         <div className='botoes'>
           <Button
             style={{ color: "white" }}
-            onClick={() => props.setSearch(!props.search)}
-          >
-            {" "}
-            RELOAD{" "}
-          </Button>
-          <Button
-            style={{ color: "white" }}
             onClick={() => props.setModalAberto(true)}
           >
             {" "}
