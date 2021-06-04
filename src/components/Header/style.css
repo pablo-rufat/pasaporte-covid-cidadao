@@ -32,3 +32,8 @@ i {
 .logo i {
   cursor: inherit;
 }
+
+.botoes {
+  display: flex;
+  gap: 15px;
+}

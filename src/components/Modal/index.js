@@ -11,8 +11,8 @@ const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const contrato = new web3.eth.Contract(abi, contractAddress);
 
 export default function Modal(props) {
-  const [success, setSuccess] = useState(true);
-  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(true);
   const [invalidInput, setInvalidInput] = useState(false);
   const [input, setInput] = useState("");
 

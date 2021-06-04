@@ -34,7 +34,6 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [vacinas, setVacinas] = useState([0, 0]);
   const [modalAberto, setModalAberto] = useState(true);
-  const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [addUser, setAddUser] = useState(false);
   /*
