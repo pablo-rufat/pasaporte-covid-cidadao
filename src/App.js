@@ -31,14 +31,14 @@ const contrato = new web3.eth.Contract(abi, contractAddress);
 
 function App() {
   const [userData, setUserData] = useState(null);
-  const [dose1, setDose1] = useState(null);
-  const [dose2, setDose2] = useState(null);
+  const [vacinas, setVacinas] = useState([0, 0]);
   const [modalAberto, setModalAberto] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [addUser, setAddUser] = useState(false);
-
+  /*
   useEffect(() => {
+    
     const fetchUser = async () => {
       setLoading(true);
       const currentUser = await Auth.currentAuthenticatedUser({
@@ -142,12 +142,31 @@ function App() {
     saveDB();
   }, [addUser]);
 
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      if (userData) {
+        const momento = new Date();
+        const vacinas = await contrato.methods
+          .getHistoricoDatasVacinas(userData.address, momento.getTime())
+          .call({ from: userData.address })
+          .catch(e => {
+            console.log(e);
+          });
+        setVacinas([Number(vacinas[0]), Number(vacinas[1])]);
+        console.log(vacinas[0], vacinas[1]);
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  });
+*/
   const logout = async () => {
     setLoading(true);
     try {
       setUserData(null);
-      setDose1(null);
-      setDose2(null);
+      setVacinas([0, 0]);
       setAddUser(false);
       setModalAberto(false);
       await Auth.signOut();
@@ -188,13 +207,17 @@ function App() {
                 <ListItem>
                   <ListItemText
                     primary='Primeira dose'
-                    secondary={userData && dose1 ? dose1 : "Ainda nada"}
+                    secondary={
+                      userData && vacinas[0] !== 0 ? vacinas[0] : "Ainda nada"
+                    }
                   />
                 </ListItem>
                 <ListItem>
                   <ListItemText
                     primary='Primeira dose'
-                    secondary={userData && dose2 ? dose2 : "Ainda nada"}
+                    secondary={
+                      userData && vacinas[1] !== 0 ? vacinas[1] : "Ainda nada"
+                    }
                   />
                 </ListItem>
               </List>
