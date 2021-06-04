@@ -11,8 +11,15 @@ export default function Header(props) {
         <h3>Passaporte Covid</h3>
       </div>
 
-      {!props.registered && (
+      {props.registered && (
         <div className='botoes'>
+          <Button
+            style={{ color: "white" }}
+            onClick={() => props.setSearch(!props.search)}
+          >
+            {" "}
+            RELOAD{" "}
+          </Button>
           <Button
             style={{ color: "white" }}
             onClick={() => props.setModalAberto(true)}

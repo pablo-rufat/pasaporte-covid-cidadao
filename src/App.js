@@ -3,14 +3,16 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Form from "./components/Form";
 import Modal from "./components/Modal";
 import Web3 from "web3";
 import { format } from "date-fns";
 import { name, br, date } from "faker-br";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { getCidadao } from "./graphql/queries";
+import MuiAlert from "@material-ui/lab/Alert";
+import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
 import {
+  TextField,
   Button,
   Card,
   CardActions,
@@ -28,17 +30,23 @@ import QRCode from "qrcode.react";
 import { createCidadao } from "./graphql/mutations";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-const contrato = new web3.eth.Contract(abi, contractAddress);
+const contrato = new web3.eth.Contract(abi, contractAddress.address);
+console.log("END", contractAddress);
 
 function App() {
   const [userData, setUserData] = useState(null);
   const [vacinas, setVacinas] = useState([0, 0]);
-  const [modalAberto, setModalAberto] = useState(true);
+  const [modalAberto, setModalAberto] = useState(false);
   const [loading, setLoading] = useState(false);
   const [addUser, setAddUser] = useState(false);
-  /*
+  const [search, setSearch] = useState(false);
+  const [input, setInput] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [invalidInput, setInvalidInput] = useState(false);
+
   useEffect(() => {
-    
+    console.log("fetch user");
     const fetchUser = async () => {
       setLoading(true);
       const currentUser = await Auth.currentAuthenticatedUser({
@@ -72,6 +80,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log("save db");
     const saveDB = async () => {
       if (addUser) {
         const currentUser = await Auth.currentAuthenticatedUser({
@@ -138,30 +147,41 @@ function App() {
         setUserData(userInfo);
       }
     };
-
-    saveDB();
+    if (!userData) {
+      saveDB();
+    }
   }, [addUser]);
 
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      if (userData) {
-        const momento = new Date();
-        const vacinas = await contrato.methods
-          .getHistoricoDatasVacinas(userData.address, momento.getTime())
-          .call({ from: userData.address })
-          .catch(e => {
-            console.log(e);
-          });
-        setVacinas([Number(vacinas[0]), Number(vacinas[1])]);
-        console.log(vacinas[0], vacinas[1]);
-      }
-    }, 2000);
+    console.log("interval");
+    console.log("AQUI", userData);
 
+    //const intervalId = setInterval(async () => {
+    const getTime = async () => {
+      try {
+        if (userData) {
+          const momento = new Date();
+          const vacinas = await contrato.methods
+            .getHistoricoDatasVacinas(userData.address, momento.getTime())
+            .call({ from: userData.address })
+            .catch(e => {
+              console.log(e);
+            });
+          setVacinas([Number(vacinas[0]), Number(vacinas[1])]);
+          console.log(vacinas[0], vacinas[1]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getTime();
+    // }, 2000);
+    /*
     return () => {
       clearInterval(intervalId);
-    };
-  });
-*/
+    };*/
+  }, [search]);
+
   const logout = async () => {
     setLoading(true);
     try {
@@ -178,14 +198,89 @@ function App() {
     setLoading(false);
   };
 
+  const handleSubmit = async e => {
+    console.log(input);
+    if (e.key !== "Enter") return;
+    setError(false);
+    setSuccess(false);
+    setInvalidInput(false);
+    if (input.length === 0) {
+      return;
+    }
+    if (input.length !== 42) {
+      setInvalidInput(true);
+      return;
+    }
+    if (input.substr(0, 2) !== "0x") {
+      setInvalidInput(true);
+      return;
+    }
+    try {
+      const momento = new Date();
+      await contrato.methods
+        .permitirAdministrador(input, momento.getTime())
+        .send({ from: userData.address })
+        .then(data => {
+          console.log(data);
+          setSuccess(true);
+        })
+        .catch(e => {
+          console.log(e);
+          setError(true);
+          setSuccess(false);
+        });
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    }
+  };
+
   return (
     <div className='App'>
       <Header
         setModalAberto={setModalAberto}
         registered={!!userData}
         logout={logout}
+        setSearch={setSearch}
+        search={search}
       />
-      {modalAberto && <Modal setModalAberto={setModalAberto} />}
+      {modalAberto && (
+        <div className='overlay'>
+          <div className='modal'>
+            <button onClick={() => setModalAberto(false)}>&#215;</button>
+            <h2>Permitir um funcionário de saúde</h2>
+            <SupervisedUserCircleIcon
+              style={{ fontSize: "220px", color: "cornflowerblue" }}
+            />
+            <TextField
+              id='standard-basic'
+              label='Endereço'
+              style={{ width: "90%" }}
+              onKeyPress={handleSubmit}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+            />
+            <div className='mensagens'>
+              {success && (
+                <MuiAlert elevation={6} variant='filled' severity='success'>
+                  Permissão concedida com sucesso. O profissional terá acesso
+                  aos seus dados por 1 hora.
+                </MuiAlert>
+              )}
+              {error && (
+                <MuiAlert elevation={6} variant='filled' severity='error'>
+                  Ocorreu um erro ao permitir o profissional.
+                </MuiAlert>
+              )}
+              {invalidInput && (
+                <MuiAlert elevation={6} variant='filled' severity='error'>
+                  Endereço inválido.
+                </MuiAlert>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {userData && (
         <main>
@@ -197,7 +292,17 @@ function App() {
             )}
             <CardHeader
               title={userData ? userData.name : ""}
-              subheader={userData ? userData.cpf : ""}
+              subheader={
+                userData
+                  ? `${userData.cpf.substr(0, 3)}.${userData.cpf.substr(
+                      3,
+                      3
+                    )}.${userData.cpf.substr(6, 3)}-${userData.cpf.substr(
+                      9,
+                      2
+                    )}`
+                  : ""
+              }
             />
             <CardContent>
               <QRCode value={userData.address} />
@@ -225,9 +330,11 @@ function App() {
                 <Button
                   size='small'
                   color='primary'
-                  onClick={navigator.clipboard.writeText(
-                    userData ? userData.address : ""
-                  )}
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      userData ? userData.address : ""
+                    )
+                  }
                 >
                   {userData ? userData.address : ""}
                 </Button>
