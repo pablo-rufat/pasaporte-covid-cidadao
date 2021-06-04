@@ -180,23 +180,19 @@ function App() {
 
   return (
     <div className='App'>
-      <div className={modalAberto ? "overlay" : "esconder"}>
-        <div className='stats'>
-          <button onClick={() => setModalAberto(false)} className='fecharModal'>
-            &times;
-          </button>
-          <Form userId={userId} setModalAberto={setModalAberto} />
-        </div>
-      </div>
       <Header
         setModalAberto={setModalAberto}
         registered={!!userData}
         logout={logout}
       />
-      {loading && <CircularProgress />}
-      {!loading && !!userData && (
+      {userData && (
         <main>
-          <Card>
+          <Card className='cardWidth'>
+            {loading && (
+              <div className='loading'>
+                <CircularProgress />
+              </div>
+            )}
             <CardHeader
               title={userData ? userData.name : ""}
               subheader={userData ? userData.cpf : ""}

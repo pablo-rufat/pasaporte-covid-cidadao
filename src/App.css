@@ -1,62 +1,44 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 .App {
   margin: 0;
   padding: 0;
   background-color: #dcdcdc;
-  font-family: "Poppins", sans-serif;
-  align-content: center;
-  align-items: center;
-}
-
-.App main {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 15px;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: grid;
-  place-content: center;
-}
-
-.stats {
-  background-color: white;
-  border-radius: 25px;
-  width: 80vw;
-  height: 80vh;
   font-family: "Roboto", sans-serif;
   display: flex;
+  min-height: 100vh;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  position: relative;
-  z-index: 1;
 }
 
-.graficos {
+main {
+  width: 30vw;
+}
+
+main p {
+  margin: 0;
+  padding: 0;
+}
+
+.cardWidth {
+  padding: 0 20px;
+  position: relative;
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   display: grid;
   place-content: center;
-  width: 90%;
-  height: 80%;
 }
 
-.fecharModal {
-  all: unset;
-  position: absolute;
-  cursor: pointer;
-  top: 10px;
-  right: 20px;
-  font-size: 40px;
-}
-
-.esconder {
-  display: none;
+@media (max-width: 414px) {
+  main {
+    width: calc(100% - 2 * 20px);
+    padding: 0 20px;
+  }
 }
