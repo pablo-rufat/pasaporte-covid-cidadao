@@ -43,10 +43,6 @@ function App() {
   const [invalidInput, setInvalidInput] = useState(false);
 
   useEffect(() => {
-    //
-  }, []);
-
-  useEffect(() => {
     console.log("fetch user");
     const fetchUser = async () => {
       setLoading(true);
@@ -155,7 +151,6 @@ function App() {
 
   useEffect(() => {
     console.log("interval");
-    console.log("AQUI", userData);
 
     const intervalId = setInterval(async () => {
       try {
@@ -354,4 +349,4 @@ function App() {
   );
 }
 
-export default withAuthenticator(App, { initialAuthState: "signup" });
+export default withAuthenticator(App);
