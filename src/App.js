@@ -43,6 +43,10 @@ function App() {
   const [invalidInput, setInvalidInput] = useState(false);
 
   useEffect(() => {
+    //
+  }, []);
+
+  useEffect(() => {
     console.log("fetch user");
     const fetchUser = async () => {
       setLoading(true);
@@ -242,12 +246,16 @@ function App() {
             <button onClick={() => setModalAberto(false)}>&#215;</button>
             <h2>Permitir um funcionário de saúde</h2>
             <SupervisedUserCircleIcon
-              style={{ fontSize: "220px", color: "cornflowerblue" }}
+              style={{
+                fontSize: "220px",
+                color: "cornflowerblue",
+                alignSelf: "center",
+              }}
             />
             <TextField
               id='standard-basic'
               label='Endereço'
-              style={{ width: "90%" }}
+              style={{ width: "100%" }}
               onKeyPress={handleSubmit}
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -346,4 +354,4 @@ function App() {
   );
 }
 
-export default withAuthenticator(App);
+export default withAuthenticator(App, { initialAuthState: "signup" });

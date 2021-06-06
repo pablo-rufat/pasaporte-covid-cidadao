@@ -9,6 +9,7 @@ header {
   width: 100vw;
   padding: 10px 40px;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 .logo {

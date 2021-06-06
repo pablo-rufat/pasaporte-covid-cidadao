@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import Amplify from "aws-amplify";
 import awsExports from "./aws-exports";
+import "./utils/translate";
 
 Amplify.configure(awsExports);
 
