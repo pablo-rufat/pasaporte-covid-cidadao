@@ -151,28 +151,29 @@ function App() {
 
   useEffect(() => {
     console.log("interval");
-
-    const intervalId = setInterval(async () => {
-      try {
-        if (userData) {
-          const momento = new Date();
-          const vacinas = await contrato.methods
-            .getHistoricoDatasVacinas(userData.address, momento.getTime())
-            .call({ from: userData.address })
-            .catch(e => {
-              console.log(e);
-            });
-          setVacinas([Number(vacinas[0]), Number(vacinas[1])]);
-          console.log(vacinas[0], vacinas[1]);
+    if (vacinas[0] === 0 || vacinas[1] === 0) {
+      const intervalId = setInterval(async () => {
+        try {
+          if (userData) {
+            const momento = new Date();
+            const vacinasTime = await contrato.methods
+              .getHistoricoDatasVacinas(userData.address, momento.getTime())
+              .call({ from: userData.address })
+              .catch(e => {
+                console.log(e);
+              });
+            setVacinas([Number(vacinasTime[0]), Number(vacinasTime[1])]);
+            console.log(vacinasTime[0], vacinasTime[1]);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    }, 2000);
+      }, 2000);
 
-    return () => {
-      clearInterval(intervalId);
-    };
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
   });
 
   const logout = async () => {
