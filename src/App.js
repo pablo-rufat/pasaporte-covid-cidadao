@@ -28,7 +28,7 @@ import contractAddress from "./utils/contractAddress.json";
 import QRCode from "qrcode.react";
 import { createCidadao } from "./graphql/mutations";
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+const web3 = new Web3(new Web3.providers.HttpProvider("http://3.80.126.126:8545"));
 const contrato = new web3.eth.Contract(abi, contractAddress.address);
 
 function App() {
