@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+.App {
+  margin: 0;
+  padding: 0;
+  background-color: #dcdcdc;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main {
+  width: 30vw;
+  z-index: 1;
+}
+
+main p {
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.qrcode {
+  display: block;
+  margin: auto;
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: grid;
+  place-content: center;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  background-color: white;
+  border-radius: 15px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+}
+
+.modal button {
+  all: unset;
+  cursor: pointer;
+  position: absolute;
+  font-size: 35px;
+  top: 15px;
+  right: 25px;
+}
+
+.modal h1 {
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 414px) {
+  main {
+    width: calc(100% - 2 * 20px);
+    padding: 0 20px;
+  }
+}
