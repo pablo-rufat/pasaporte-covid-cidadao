@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Web3 from "web3";
 import { format } from "date-fns";
-import { name, br, date } from "faker-br";
+import { name, br } from "faker-br";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { getCidadao } from "./graphql/queries";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -103,10 +103,7 @@ function App() {
           console.log("New Account balance", bal);
         });
 
-        const data = date.past();
-        if (data.getYear() >= 1965) {
-          data.setYear(1965 + Math.floor(Math.random() * 6));
-        }
+        const data = randomDate();
         const dataFormatada = format(data, "dd/MM/yyyy");
 
         const userInfo = {
@@ -228,6 +225,14 @@ function App() {
       setError(true);
     }
   };
+
+  function randomDate() {
+    return new Date(
+      new Date(0).getTime() +
+        Math.random() *
+          (new Date(123562800000).getTime() - new Date(0).getTime())
+    );
+  }
 
   return (
     <div className='App'>
