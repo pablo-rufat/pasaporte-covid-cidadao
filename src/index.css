@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: cornflowerblue;
+  background-color: rgb(101, 236, 112);
 }
 
 code {
@@ -14,7 +14,7 @@ code {
 }
 
 :root {
-  --amplify-primary-color: cornflowerblue;
-  --amplify-primary-tint: #5077be;
-  --amplify-primary-shade: #3c59ae;
+  --amplify-primary-color: rgb(101, 236, 112);
+  --amplify-primary-tint: rgb(124, 180, 72);
+  --amplify-primary-shade: rgb(124, 180, 72);
 }

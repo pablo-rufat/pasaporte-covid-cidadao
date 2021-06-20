@@ -249,7 +249,7 @@ function App() {
             <SupervisedUserCircleIcon
               style={{
                 fontSize: "220px",
-                color: "cornflowerblue",
+                color: "rgb(101, 236, 112)",
                 alignSelf: "center",
               }}
             />
